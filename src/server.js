@@ -14,12 +14,14 @@ app.post('/login', function (req, res, next) {
     } else {
         res.status(401);
     }
-    res.send();
+    setTimeout(() => res.send() , 3000);
 });
 
 app.post('/users', function (req, res, next) {
-    res.status(200);
-    res.send(req.body);
+    setTimeout(() => {
+        res.status(200);
+        res.json(req.body);
+    } , 3000);
 });
 
 app.listen(8080, function () {

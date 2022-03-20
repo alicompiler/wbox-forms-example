@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useState } from "react";
 import { Button, Form } from "wbox-forms";
 import { TextField, PasswordField, SelectField, RadioButton, TextArea, Checkbox, DateField } from "wbox-forms-tailwindcss";
 
@@ -14,12 +14,16 @@ export function RegistrationForm() {
         { text: 'Male', value: 'male' },
         { text: 'Female', value: 'female' },
     ];
+    
+    const [loading, setLoading] = useState(false);
 
     const submitOptions = {
         url: 'http://localhost:8080/users',
-        onSuccess: res => console.log(res),
-        onFail: res => console.log(res)
+        onSuccess: res => setLoading(false),
+        onFail: res => setLoading(false),
+        clearAfterSuccess: false
     };
+
 
     return <Form serviceOptions={{
         submit: submitOptions
@@ -34,9 +38,12 @@ export function RegistrationForm() {
         <Checkbox name='agreeToPolicy' text="Agree to policy" />
         <br /><br />
         <Button render={serviceFactory => {
-            const onClick = () => serviceFactory.createSubmitService().submit();
-            return <button onClick={onClick} className="p-4 bg-orange-500 rounded text-white">
-                Create Account
+            const onClick = () => {
+                setLoading(true);
+                serviceFactory.createSubmitService().submit();
+            };
+            return <button disabled={loading} onClick={onClick} className={`p-4 ${loading ? 'bg-gray-500' : 'bg-orange-500'} rounded text-white`}>
+                {loading ? "Creating Account..." : "Create Account "}
             </button>
         }} />
     </Form>
